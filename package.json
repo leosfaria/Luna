@@ -1,0 +1,21 @@
+{
+  "name": "cassandra",
+  "version": "1.0.0",
+  "description": "Projeto maligno para compra e venda de XPTOs, onde xptos são coisas de valor voluveis, como bitcoin que é o intuito inicial",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/leosfaria/cassandra.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/leosfaria/cassandra/issues"
+  },
+  "homepage": "https://github.com/leosfaria/cassandra#readme",
+  "dependencies": {
+    "crypto": "^1.0.1",
+    "querystring": "^0.2.0",
+    "unirest": "^0.5.1"
+  }
+}
