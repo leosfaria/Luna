@@ -33,7 +33,9 @@ setInterval(() =>
 	trader(action, bitcoin)
 
 	printStatus(bitcoin)
-   }, 'STAIRS'),
+	//printTransactions()
+
+   }, 'STAIRS_BIG', 0.02),
    CRAWLER_INTERVAL
 )
 
@@ -42,7 +44,7 @@ var printStatus = function(bitcoinValue) {
 	
 	transactions.map((transaction) => { bitcoins += transaction.bitcoin })
 	
-	console.log("How we are going: valueRS - " + valueRemaining + ", valeBitcoin: " + bitcoins + ", TotalValue: " + (valueRemaining + (bitcoins * bitcoinValue)) ) 
+	console.log("How we are going: valueRS - " + valueRemaining + ", valueBitcoin: " + bitcoins + ", TotalValue: " + (valueRemaining + (bitcoins * bitcoinValue)) ) 
 }
 
 var saveTransaction = function(action, bitcoinValue) {
@@ -50,6 +52,7 @@ var saveTransaction = function(action, bitcoinValue) {
 	transaction["action"] = action
 	transaction["valueRS"] = negotiationValue
 	transaction["bitcoin"] = negotiationValue / bitcoinValue
+	transaction["bitcoinValue"] = bitcoinValue
 
 	transactions.push(transaction)
 }
@@ -57,7 +60,7 @@ var saveTransaction = function(action, bitcoinValue) {
 var trader = function(action, bitcoinValue) {
 
 	if(action == "BUY") {
-		if(valueRemaining <= 0) {
+		if(valueRemaining - negotiationValue <= 0) {
 			console.log("Comprados todos os bitcoins possíveis")
 			return
 		}
@@ -73,20 +76,33 @@ var trader = function(action, bitcoinValue) {
 			return
 		}
 
-		console.log("transactions before: " )
-		transactions.map((transaction) => { console.log(transaction) })
-		transactions = transactions.sort((a,b) => { (a.bitcoin > b.bitcoin) ? 1 : ( (a.bitcoin < b.bitcoin) ? -1 : 0) })
-		console.log("transactions after: " )
-		transactions.map((transaction) => { console.log(transaction) })
+		//Sort para ordenar as compras do mais caro para o mais barato
+		transactions.sort((a,b) => { return (a.bitcoinValue > b.bitcoinValue) ? -1 : ( (a.bitcoinValue < b.bitcoinValue) ? 1 : 0) })
 		
-		console.log("TODO: Vender BS ")
-		
+		var transactionToSell
+
+		transactions.forEach(transaction => {
+			if(transaction.bitcoinValue < bitcoinValue) {
+				console.log("Joinha! Ganho: " + (bitcoinValue - transaction.bitcoinValue))
+				transactionToSell = transaction
+			}
+		});
+
+		if(transactionToSell != undefined) {
+			console.log("TODO: Vender BS: " + transactionToSell.bitcoin)
+			valueRemaining += transactionToSell.bitcoin * bitcoinValue
+			transactions.splice(transactions.indexOf(transactionToSell), 1)
+		}
+
+		return
 	}
 
 	if(action == "DO NOTHING") {
 		console.log("Holding")
 	}
+}
 
+var printTransactions = function() {
 	console.log("transaction: ")
 	transactions.map((transaction) => { console.log(transaction) })
 }

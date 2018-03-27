@@ -5,6 +5,7 @@ const mock_BitcoinFirstValue = 21000
 var mock_BitcoinCurrent = mock_BitcoinFirstValue
 var mock_Counter = 0
 var mock_flip = 1
+var mock_BitcoinFlowPercent
 
 var BitcoinValor = function () {
 }
@@ -32,37 +33,51 @@ BitcoinValor.prototype = {
         });
     },
 
-    mock: function(success, action) {
+    mock: function(success, action, bitcoinFlowPercent) {
         if (mock_Counter > 0) {
             switch(action) {
                 case 'UP':
-                    mock_BitcoinCurrent = mock_BitcoinCurrent + ( mock_BitcoinCurrent * 0.2 )
+                    mock_BitcoinCurrent = mock_BitcoinCurrent + ( mock_BitcoinCurrent * mock_BitcoinFlowPercent )
                     break;
                 case 'DOWN':
-                    mock_BitcoinCurrent = mock_BitcoinCurrent - ( mock_BitcoinCurrent * 0.2 )
+                    mock_BitcoinCurrent = mock_BitcoinCurrent - ( mock_BitcoinCurrent * mock_BitcoinFlowPercent )
                     if(value <= 0) value = 0
                     break;
-                case 'STAIRS':
+                case 'STAIRS_SMALL':
                     if (mock_Counter % 5 > 0 && mock_flip > 0) {
-                        mock_BitcoinCurrent = mock_BitcoinCurrent + ( mock_BitcoinCurrent * 0.2 )    
+                        mock_BitcoinCurrent = mock_BitcoinCurrent + ( mock_BitcoinCurrent * mock_BitcoinFlowPercent )    
                     }
 
                     if (mock_Counter % 5 > 0 && mock_flip < 0) {
-                        mock_BitcoinCurrent = mock_BitcoinCurrent - ( mock_BitcoinCurrent * 0.2 )    
+                        mock_BitcoinCurrent = mock_BitcoinCurrent - ( mock_BitcoinCurrent * mock_BitcoinFlowPercent )    
                     }
 
-                    if (mock_Counter % 5 == 0) mock_flip = -1
+                    if (mock_Counter % 5 == 0) mock_flip = mock_flip * -1
+
+                    break;
+                case 'STAIRS_BIG':
+                    if (mock_Counter % 10 > 0 && mock_flip > 0) {
+                        mock_BitcoinCurrent = mock_BitcoinCurrent + ( mock_BitcoinCurrent * mock_BitcoinFlowPercent )    
+                    }
+
+                    if (mock_Counter % 10 > 0 && mock_flip < 0) {
+                        mock_BitcoinCurrent = mock_BitcoinCurrent - ( mock_BitcoinCurrent * mock_BitcoinFlowPercent )    
+                    }
+
+                    if (mock_Counter % 10 == 0) mock_flip = mock_flip * -1
 
                     break;
                 case 'UP_AND_STAY':
                     if(mock_Counter < 4) {
-                        mock_BitcoinCurrent = mock_BitcoinCurrent + ( mock_BitcoinCurrent * 0.2 )    
+                        mock_BitcoinCurrent = mock_BitcoinCurrent + ( mock_BitcoinCurrent * mock_BitcoinFlowPercent )    
                     }
                     break;
                 default:
                     mock_BitcoinCurrent = mock_BitcoinCurrent + ( 1 * (mock_Counter % 2) )  
                     break;
             }
+        } else {
+            mock_BitcoinFlowPercent = bitcoinFlowPercent ? bitcoinFlowPercent : Math.random()
         }
 
         mock_Counter++
