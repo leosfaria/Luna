@@ -1,3 +1,5 @@
+var config = require('./config')
+
 const unirest = require('unirest')
 const ENDPOINT_API = 'https://api.bitvalor.com/v1/'
 
@@ -86,4 +88,47 @@ BitcoinValor.prototype = {
     }
 }
 
-module.exports = {BitcoinValor}
+var BlinkTradeRest = require("blinktrade").BlinkTradeRest;
+var BlinkTrade = new BlinkTradeRest({
+    prod: true,
+    key: config.foxbit.key,
+    secret: config.foxbit.secret,
+    currency: "BRL",
+    "MsgType": "U2",
+    "BalanceReqID": 1
+});
+
+// WebSocket Transport
+//var BlinkTradeWS = require("blinktrade").BlinkTradeWS;
+//var blinktrade = new BlinkTradeWS({ prod: false });
+
+var BitcoinTrade = function () {
+}
+
+BitcoinTrade.prototype = {
+
+    tricker: function (success) {
+        BlinkTrade.ticker().then(function(ticker) {
+            console.log(ticker)
+            success(ticker)
+        });
+    },
+
+    orderBook: function (success) {
+        BlinkTrade.orderbook().then(function(orderbook) {
+            console.log(orderbook);
+            success(orderbook)
+        });  
+    },
+
+    myBalance: function (success) {
+        BlinkTrade.balance().then(function(balance) {
+            console.log(balance);
+        });   
+    },
+
+    mock: function(success, action, bitcoinFlowPercent) {
+    }
+}
+
+module.exports = {BitcoinValor, BitcoinTrade}

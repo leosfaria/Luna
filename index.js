@@ -1,4 +1,4 @@
-const CRAWLER_INTERVAL = 1000		//intervalo entre chamadas a api
+const CRAWLER_INTERVAL = 60000		//intervalo entre chamadas a api
 
 const initValue = 200 //Valor em reais inicial de compra
 
@@ -14,8 +14,15 @@ var valueRemaining = initValue
 const BitcoinValor = require("./api.js").BitcoinValor
 var infoApi = new BitcoinValor()
 
+const BitcoinTrade = require("./api.js").BitcoinTrade
+var tradeApi = new BitcoinTrade()
+
+tradeApi.myBalance((balance) => {
+	console.log("Teste do Trade 2 " + balance)
+})
+
 setInterval(() => 
-   infoApi.mock((tick) => {
+   infoApi.ticker((tick) => {
    	console.log("BitcoinValor: " + tick.ticker_1h.exchanges.FOX.last)
    	
    	var bitcoin = tick.ticker_1h.exchanges.FOX.last
@@ -35,7 +42,7 @@ setInterval(() =>
 	printStatus(bitcoin)
 	//printTransactions()
 
-   }, 'STAIRS_BIG', 0.02),
+   }), //, 'STAIRS_BIG', 0.02
    CRAWLER_INTERVAL
 )
 

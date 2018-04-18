@@ -16,6 +16,7 @@
   "dependencies": {
     "crypto": "^1.0.1",
     "querystring": "^0.2.0",
-    "unirest": "^0.5.1"
+    "unirest": "^0.5.1",
+    "blinktrade": "0.0.20"
   }
 }
